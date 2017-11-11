@@ -1,0 +1,29 @@
+# Maintainer: Equim <sayaka@ekyu.moe>
+
+pkgname=iperf3
+pkgver=3.3
+pkgrel=1
+pkgdesc="TCP, UDP, and SCTP network bandwidth measurement tool"
+arch=('i686' 'x86_64')
+url="https://github.com/esnet/iperf"
+license=('BSD')
+depends=('openssl-devel')
+source=("http://downloads.es.net/pub/iperf/iperf-${pkgver}.tar.gz")
+sha256sums=('6f596271251056bffc11bbb8f17d4244ad9a7d4a317c2459fdbb853ae51284d8')
+
+build() {
+  cd "iperf-${pkgver}"
+  ./configure \
+    --build=${CHOST} \
+    --host=${CHOST} \
+    --prefix=/usr
+  make
+}
+
+package() {
+  cd "iperf-${pkgver}"
+  make DESTDIR="${pkgdir}/" install
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  install -Dm 644 README.md -t "${pkgdir}/usr/share/doc/${pkgname}"
+  install -Dm 644 examples/*{.am,.in,.c} -t "${pkgdir}/usr/share/doc/${pkgname}/examples"
+}

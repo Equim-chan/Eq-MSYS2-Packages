@@ -1,0 +1,28 @@
+# Maintainer: Equim <sayaka@ekyu.moe>
+
+_realname=snow
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=20130616
+pkgrel=1
+pkgdesc="Steganography program for concealing messages in text files"
+arch=('i686' 'x86_64')
+url="http://www.darkside.com.au/snow/"
+license=('APACHE')
+source=("http://www.darkside.com.au/snow/${_realname}-${pkgver}.tar.gz"
+        "0001-include-string-h.patch")
+sha256sums=('c0b71aa74ed628d121f81b1cd4ae07c2842c41cfbdf639b50291fc527c213865'
+            '4511edcdccbbc264c925a0643b01a04fcda09cca7735d3c7eea30c5e97505c9c')
+
+build() {
+  cd "${_realname}-${pkgver}"
+  patch -p0 -i "${srcdir}/0001-include-string-h.patch"
+  make
+}
+
+package() {
+  cd "${_realname}-${pkgver}"
+  install -Dm755 snow.exe "${pkgdir}/${MINGW_PREFIX}/bin/${_realname}.exe"
+  install -Dm644 snow.1 "${pkgdir}/${MINGW_PREFIX}/share/man/man1/${_realname}.1"
+  install -Dm644 COPYING "${pkgdir}/${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE"
+}
