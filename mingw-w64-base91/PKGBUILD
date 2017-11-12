@@ -1,0 +1,27 @@
+# Maintainer: Equim <sayaka@ekyu.moe>
+
+_realname=base91
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=0.6.0
+pkgrel=1
+pkgdesc='An advanced method for encoding binary data to ASCII text'
+arch=('i686' 'x86_64')
+url="http://base91.sourceforge.net/"
+license=('BSD')
+source=("http://downloads.sourceforge.net/${_realname}/${_realname}-${pkgver}.tar.gz")
+sha256sums=('02cfae7322c1f865ca6ce8f2e0bb8d38c8513e76aed67bf1c94eab1343c6c651')
+
+build() {
+    cd ${srcdir}/${_realname}-${pkgver}
+
+    sed -i '/^\(C\|LD\)FLAGS/s/=/+=/' Makefile
+    make
+}
+
+package() {
+    cd ${srcdir}/${_realname}-${pkgver}
+
+    make prefix="${MINGW_PREFIX}" DESTDIR="${pkgdir}" install
+    install -D -m0644 LICENSE "${pkgdir}/${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE"
+}
